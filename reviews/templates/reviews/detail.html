@@ -3,49 +3,82 @@
 {% load static %}
 
 {% block content %}
-  <h1>{{ review.title }}</h1>
+<div class="con p-5" style="background-color: rgb(255,255,255)">
   {% if review.image %}
-    <img src="{{ review.image.url }}">
+  <div class="text-center mb-4">
+    <img src="{{ review.image.url }}" style="width: 500px;">
+  </div>
+
   {% endif %}
-  <p>{{ review.content }}</p>
-
-  {% if request.user == review.user %}
-  <!-- 글 삭제 -->
-  <form action="{% url 'reviews:delete' review.pk %}" method="POST">
-    {% csrf_token %}
-    <input class="btn btn-danger" type="submit" value="삭제">
-  </form>
-
-  <!-- 글 수정 -->
-  <a class="btn btn-primary" href="{% url 'reviews:update' review.pk %}">글 수정</a>
-  {% endif %}
-
-  <!-- 뒤로 -->
-  <a class="btn btn-secondary" href="{% url 'reviews:index' %}">뒤로</a>
-
-  <!-- 댓글 -->
-  <h3>댓글</h3>
-  <form action="{% url 'reviews:comments' review.pk %}" method="POST">
-    {% csrf_token %}
-    {% bootstrap_form comment_form %}
-    <input type="submit" value="완료">
-  </form>
-  {% for comment in comments %}
-    {{ comment.content }}
-    <!-- 댓글 삭제 -->
-    {% if request.user == comment.user %}
-    <form action="{% url 'reviews:comments_delete' review.pk comment.pk %}" method="POST">
+  <div class="d-flex flex-column">
+    <div>
+      <h1>{{ review.title }}</h1>
+      <p>{{ review.content }}</p>
+      
+      {% if review.user == review.user %}
+      <div class="d-flex justify-content-end">
+      <!-- 글 삭제 -->
+        <form class="me-3" action="{% url 'reviews:delete' review.pk %}" method="POST">
+          {% csrf_token %}
+          <input class="btn btn-danger" type="submit" value="삭제">
+        </form>
+      
+      <!-- 글 수정 -->
+        <a class="btn btn-primary" href="{% url 'reviews:update' review.pk %}">수정</a>
+        {% endif %}
+      </div>
+      <hr class="my-3">
+    </div>
+    <!-- 댓글 -->
+    {% if review.user.is_authenticated %}
+    <form action="{% url 'reviews:comments' review.pk %}" method="POST">
       {% csrf_token %}
-      <button type="submit" class="btn btn-outline-danger ms-3">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewbox="0 0 16 16">
-          <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-          <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-        </svg>
-      </button>
+      {% bootstrap_form comment_form %}
+      <div class="d-flex justify-content-end">
+        {% bootstrap_button button_type="submit" content="등록" button_class="btn-primary" %}
+      </div>
     </form>
-    {% endif %}
-    {% empty %}
-    <p>댓글이 없어요.</p>
-  {% endfor %}
-{% endblock %}
+  {% endif %}
+  <br>
+  <div>
+    {% for comment in comments %}
+      <div class="d-flex">
+        <div class="d-flex align-items-center">
+          <a class="text-decoration-none" href="{% url 'accounts:detail' comment.user.pk %}">{{ comment.user.username }}</a>&nbsp;|&nbsp;{{ comment.content }}
+        </div>
+        <!-- <div class="d-flex align-items-center ms-3 text-secondary">
+          {% if comment.created_string == False %}
+            {{ comment.created_at|date:'m월 d일' }}
+          {% else %}
+            {{ comment.created_string }}
+          {% endif %}
+        </div> -->
+        {% if review.user == comment.user %}
+          <form action="{% url 'reviews:comments_delete' review.pk comment.pk %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger ms-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewbox="0 0 16 16">
+                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+              </svg>
+            </button>
+          </form>
+        {% endif %}
+      </div>
+      <hr>
+      {% empty %}
+      <div>
+        <p>안녕하십니까? 댓글이 없는 곳에 번개처럼 나타나는 무플방지위원회입니다.
+          <br>
+          -무플방지위원회일동-
+          <br>
+          &nbsp;（｡･ω･｡)つ━☆・*。<br>
+          ⊂ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ノ ・゜+.<br>
+          &nbsp;&nbsp;しー&nbsp;Ｊ °。+ *</p>
+      </div>
+      <hr>
+    {% endfor %}
+  </div>
+</div>
 
+{% endblock %}
