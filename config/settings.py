@@ -48,6 +48,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'reviews',
+    'accounts',
     'django_bootstrap5',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -146,4 +147,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
+
+# User Model
+AUTH_USER_MODEL = 'accounts.User'
+
