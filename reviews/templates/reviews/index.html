@@ -3,14 +3,14 @@
 {% load static %}
 
 {% block content %}
-  <h1 class="text-center my-3 fw-bold">Albums</h1>
+  <h1 class="text-center my-5 fw-bold">Albums</h1>
 
   <div class="row">
     {% for review in reviews %}
 
       <div class="col-12 col-md-6 col-lg-4 my-2 text-center" style="position: relative; cursor: pointer;" onclick="location.href='{% url 'reviews:detail' review.pk %}'">
         <div class="imgHoverEvent event7">
-          {% if review.image.url %}
+          {% if review.image %}
             <div class="imgBox">
               <img src="{{ review.image.url }}" alt="...">
             </div>
