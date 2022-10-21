@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import CustomUserCreationForm, CustomUserChangeForm
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
@@ -14,17 +14,21 @@ def index(request):
     return render(request, "accounts/index.html", context)
 
 def signup(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('accounts:index')
-    else:     
-        form = CustomUserCreationForm()
-    context = {
-        'form': form
-    }
-    return render(request, 'accounts/signup.html', context)
+    if request.user.is_authenticated:
+        return redirect('accounts:index')
+    else:
+        if request.method == 'POST':
+            form = CustomUserCreationForm(request.POST)
+            if form.is_valid():
+                user = form.save()
+                auth_login(request, user)
+                return redirect('accounts:index')
+        else:     
+            form = CustomUserCreationForm()
+        context = {
+            'form': form
+        }
+        return render(request, 'accounts/signup.html', context)
 
 def detail(request, pk):
     user = get_user_model().objects.get(pk=pk)
@@ -73,6 +77,8 @@ def change_password(request):
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             form.save()
+            # 세션 무효화 방지
+            update_session_auth_hash(request, form.user)
             return redirect('accounts:index')
     else:
         form = PasswordChangeForm(request.user)
@@ -80,3 +86,9 @@ def change_password(request):
 		'form': form,
 	}
     return render(request, 'accounts/change_password.html', context)
+
+@login_required
+def delete(request):
+    request.user.delete()
+    auth_logout(request)
+    return redirect('index')
