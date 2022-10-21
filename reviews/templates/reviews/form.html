@@ -3,19 +3,22 @@
 {% load static %}
 
 {% block content %}
+<div class="con py-5 px-3" style="background-color: rgb(255,255,255)">
 {% if request.resolver_match.url_name == 'create' %}
-  <h1>작성</h1>
+  <h1 class="text-center">작성</h1>
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {% bootstrap_form form %}
-    <input type="submit" value="완료">
+    <p><button type="submit" class="btn btn-outline-secondary my-1">완료</button></p>
+    
   </form>
   {% else %}
   <h1>수정</h1>
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {% bootstrap_form form %}
-    <input type="submit" value="완료">
+    <p><button type="submit" class="btn btn-outline-secondary my-1">완료</button></p>
   </form>
 {% endif %}
+</div>
 {% endblock %}

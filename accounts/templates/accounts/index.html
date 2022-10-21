@@ -2,6 +2,7 @@
 {% load django_bootstrap5 %}
 
 {% block content %}
+<div class="con py-5 px-5" style="background-color: rgb(255,255,255)">
   <div class="row mt-5">
     <h1 class="text-center">회원목록</h1>
     <!-- Table -->
@@ -26,6 +27,7 @@
       </tbody>
     </table>
   </div>
-  <a class="btn btn-primary" href="{% url 'index' %}">처음으로</a>
+  <a class="btn btn-outline-primary" href="{% url 'index' %}">처음으로</a>
+</div>
 </div>
 {% endblock content %}
