@@ -3,31 +3,31 @@
 {% load static %}
 
 {% block content %}
-  <h1 class="text-center my-3">REVIEW</h1>
-  <a class="btn btn-primary" href="{% url 'reviews:create' %}">작성</a>
+  <h1 class="text-center my-3 fw-bold">Albums</h1>
 
-<div class="row">
-  {% for review in reviews %}
-  
-  <div class="col-12 col-md-6 col-lg-4 my-2 text-center"  style="position: relative; cursor: pointer;" onclick="location.href='{% url 'reviews:detail' review.pk %}'">
-    <div class="imgHoverEvent event7">
-      {% if review.image.url %}
-      <div class="imgBox">
-        <img src="{{ review.image.url }}" alt="...">
-      </div>
-      <div class="hoverBox">
-        <span>
-          <br>
-          <br>
-          <p class="card-title"><b>{{ review.title }}</b></p>
-          <p class="text-white align-middle">{{ review.user.username }}</p>  
-        </span>
-      </div>
-      {% endif %}
+  <div class="row">
+    {% for review in reviews %}
 
-    </div>
+      <div class="col-12 col-md-6 col-lg-4 my-2 text-center" style="position: relative; cursor: pointer;" onclick="location.href='{% url 'reviews:detail' review.pk %}'">
+        <div class="imgHoverEvent event7">
+          {% if review.image.url %}
+            <div class="imgBox">
+              <img src="{{ review.image.url }}" alt="...">
+            </div>
+            <div class="hoverBox">
+              <span>
+                <br>
+                <br>
+                <p class="card-title text-white">
+                  <b>{{ review.title }}</b>
+                </p>
+              </span>
+            </div>
+          {% endif %}
+
+        </div>
+      </div>
+
+    {% endfor %}
   </div>
-  
-  {% endfor %}
-</div>
 {% endblock %}
